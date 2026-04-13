@@ -1,0 +1,289 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=Syne:wght@400;500;600&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 4%;
+    --foreground: 40 7% 95%;
+
+    --card: 0 0% 10%;
+    --card-foreground: 40 7% 95%;
+
+    --popover: 0 0% 10%;
+    --popover-foreground: 40 7% 95%;
+
+    --primary: 40 4% 78%;
+    --primary-foreground: 0 0% 4%;
+
+    --secondary: 0 0% 15%;
+    --secondary-foreground: 40 7% 95%;
+
+    --muted: 0 0% 20%;
+    --muted-foreground: 0 0% 53%;
+
+    --accent: 40 4% 78%;
+    --accent-foreground: 0 0% 4%;
+
+    --destructive: 0 0% 40%;
+    --destructive-foreground: 40 7% 95%;
+
+    --border: 0 0% 15%;
+    --input: 0 0% 15%;
+    --ring: 0 0% 67%;
+
+    --radius: 0.25rem;
+
+    /* Pensieve greyscale tokens */
+    --pen-black: 0 0% 4%;
+    --pen-950: 0 0% 7%;
+    --pen-900: 0 0% 10%;
+    --pen-800: 0 0% 15%;
+    --pen-700: 0 0% 20%;
+    --pen-600: 0 0% 28%;
+    --pen-500: 0 0% 40%;
+    --pen-400: 0 0% 53%;
+    --pen-300: 0 0% 67%;
+    --pen-200: 0 0% 80%;
+    --pen-100: 0 0% 91%;
+    --pen-white: 40 7% 95%;
+    --pen-accent: 40 4% 78%;
+
+    --sidebar-background: 0 0% 7%;
+    --sidebar-foreground: 0 0% 67%;
+    --sidebar-primary: 40 7% 95%;
+    --sidebar-primary-foreground: 0 0% 4%;
+    --sidebar-accent: 0 0% 15%;
+    --sidebar-accent-foreground: 40 7% 95%;
+    --sidebar-border: 0 0% 15%;
+    --sidebar-ring: 0 0% 67%;
+
+    /* Animation timing tokens */
+    --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+    --ease-in-out: cubic-bezier(0.45, 0, 0.55, 1);
+    --duration-fast: 150ms;
+    --duration-base: 300ms;
+    --duration-slow: 600ms;
+    --duration-enter: 700ms;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: 'Syne', sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Cormorant Garamond', serif;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 2px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #111111;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #333333;
+    border-radius: 2px;
+  }
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: #333333 #111111;
+  }
+}
+
+/* Film grain noise overlay */
+.film-grain::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 256px 256px;
+}
+
+/* Radial vignette */
+.vignette::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: radial-gradient(ellipse at center, transparent 50%, hsl(0 0% 4% / 0.6) 100%);
+}
+
+/* Input focus sweep animation */
+.input-sweep {
+  position: relative;
+}
+.input-sweep::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: hsl(var(--pen-accent));
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.input-sweep:focus-within::after {
+  transform: scaleX(1);
+}
+
+/* Floating particles */
+@keyframes float-up {
+  0% {
+    transform: translateY(100vh) translateX(0);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.15;
+  }
+  90% {
+    opacity: 0.15;
+  }
+  100% {
+    transform: translateY(-10vh) translateX(20px);
+    opacity: 0;
+  }
+}
+
+.particle {
+  position: fixed;
+  width: 2px;
+  height: 2px;
+  background: hsl(var(--pen-400));
+  border-radius: 50%;
+  pointer-events: none;
+  animation: float-up linear infinite;
+}
+
+/* Corner brackets mixin */
+.corner-brackets {
+  position: relative;
+}
+.corner-brackets::before,
+.corner-brackets::after {
+  content: '';
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border-color: hsl(var(--pen-600));
+  pointer-events: none;
+}
+.corner-brackets::before {
+  top: -1px;
+  left: -1px;
+  border-top: 1px solid;
+  border-left: 1px solid;
+}
+.corner-brackets::after {
+  bottom: -1px;
+  right: -1px;
+  border-bottom: 1px solid;
+  border-right: 1px solid;
+}
+
+/* Clipped corner button */
+.clip-corner {
+  clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+}
+
+/* Breathing animation */
+@keyframes breathe {
+  0%, 100% { transform: scale(1); opacity: 0.4; }
+  50% { transform: scale(1.15); opacity: 0.15; }
+}
+
+/* Glow pulse for status dot */
+@keyframes glow-pulse {
+  0%, 100% { opacity: 1; box-shadow: 0 0 4px hsl(var(--pen-accent) / 0.5); }
+  50% { opacity: 0.6; box-shadow: 0 0 8px hsl(var(--pen-accent) / 0.3); }
+}
+
+/* Breathing session dot */
+@keyframes session-breathe {
+  0%, 100% { opacity: 0.3; transform: scale(1); }
+  50% { opacity: 0.7; transform: scale(1.2); }
+}
+
+/* Button fill sweep */
+@keyframes fill-sweep {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(0); }
+}
+
+/* Nav underline slide */
+@keyframes underline-slide {
+  from { transform: scaleX(0); transform-origin: left; }
+  to { transform: scaleX(1); transform-origin: left; }
+}
+
+/* Top loading bar */
+@keyframes loading-progress {
+  0% { transform: translateX(-100%); }
+  50% { transform: translateX(0%); }
+  100% { transform: translateX(100%); }
+}
+
+.loading-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  z-index: 9998;
+  overflow: hidden;
+}
+.loading-bar::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: #aaaaaa;
+  animation: loading-progress 1.5s ease-in-out infinite;
+}
+
+/* Mono label style */
+.mono-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: hsl(var(--pen-400));
+}
+
+/* Font utility classes */
+.font-display {
+  font-family: 'Cormorant Garamond', serif;
+}
+.font-ui {
+  font-family: 'Syne', sans-serif;
+}
+.font-mono {
+  font-family: 'Space Mono', monospace;
+}
+
+/* Global button interactions */
+button, [role="button"] {
+  transition: transform var(--duration-fast) var(--ease-out);
+}
+button:hover, [role="button"]:hover {
+  transform: translateY(-2px);
+}
+button:active, [role="button"]:active {
+  transform: scale(0.97);
+}
